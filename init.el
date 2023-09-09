@@ -4,7 +4,7 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
-   '(evil-collection evil general all-the-icons doom-themes helpful counsel ivy-rich which-key rainbow-delimiters doom-modeline ivy command-log-mode use-package lsp-mode))
+   '(magit counsel-projectile projectile hydra evil-collection evil general doom-themes helpful counsel ivy-rich which-key rainbow-delimiters ivy command-log-mode use-package lsp-mode))
  '(warning-suppress-types '((comp))))
 
 (custom-set-faces
@@ -93,10 +93,6 @@
   :init
   (ivy-rich-mode 1))
 
-;; Ser doom-modeline
-(use-package doom-modeline
-  :init (doom-modeline-mode 1)
-  :custom ((doom-modeline-height 15)))
 
 ;; Set rainbow-delimiters
 (use-package rainbow-delimiters
@@ -134,14 +130,6 @@
 (use-package doom-themes
   :init (load-theme 'doom-palenight t))
 
-;; Set all-the icons
-;; NOTE: The first time you load your configuration on a new machine,
-;; you'll need to run:
-;;
-;; M-x all-the-icons-install-fonts
-(use-package all-the-icons
-:if (display-graphic-p))
-
 ;; general-keybindings
 (use-package general
   :after evil
@@ -151,7 +139,7 @@
     :prefix "SPC"
     :global-prefix "C-SPC")
 
-  (efs/leader-keys
+  (efs/leader-keys   ;; Define shortkeys on my own
     "t"  '(:ignore t :which-key "toggles")
     "tt" '(counsel-load-theme :which-key "choose theme")
     "fde" '(lambda () (interactive) (find-file (expand-file-name "~/.emacs.d/Emacs.org")))))
@@ -180,4 +168,49 @@
   :after evil
   :config
   (evil-collection-init))
+
+(use-package hydra
+  :defer t)
+
+;; Set Hydra - Text scaling
+(defhydra hydra-text-scale (:timeout 4)
+  "scale text"
+  ("j" text-scale-increase "in")
+  ("k" text-scale-decrease "out")
+  ("f" nil "finished" :exit t))
+
+(efs/leader-keys
+  "ts" '(hydra-text-scale/body :which-key "scale text"))
+
+;; Set Projectile
+(use-package projectile
+  :diminish projectile-mode
+  :config (projectile-mode)
+  :custom ((projectile-completion-system 'ivy))
+  :bind-keymap
+  ("C-c p" . projectile-command-map)
+  :init
+  ;; NOTE: Set this to the folder where you keep your Git repos!
+  (when (file-directory-p "~/Code")
+    (setq projectile-project-search-path '("~/Code")))
+  (setq projectile-switch-project-action #'projectile-dired))
+
+;; Set counsel-projectile
+(use-package counsel-projectile   
+  :after projectile
+  :config (counsel-projectile-mode))
+
+;; Set Magit
+(use-package magit
+  :commands magit-status
+  :custom
+  (magit-display-buffer-function #'magit-display-buffer-same-window-except-diff-v1))
+
+;; Set Forge  -- NOT INSTALLED BY THE MOMENT
+;; NOTE: Make sure to configure a GitHub token before using this package!
+;; - https://magit.vc/manual/forge/Token-Creation.html#Token-Creation
+;; - https://magit.vc/manual/ghub/Getting-Started.html#Getting-Started
+;; (use-package forge
+;;  :after magit)
+
 
