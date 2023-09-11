@@ -68,6 +68,11 @@
 
 ;; (use-package command-log-mode) ;; Disabled by the moment !!!
 
+;; Set doom-themes
+(use-package doom-themes
+  :init (load-theme 'doom-one t))
+  
+;; Set powerline
 (require 'powerline)
 (powerline-raw mode-line-mule-info nil 'l)
 
@@ -128,10 +133,6 @@
   ([remap describe-command] . helpful-command)
   ([remap describe-variable] . counsel-describe-variable)
   ([remap describe-key] . helpful-key))
-
-;; Set doom-themes
-(use-package doom-themes
-  :init (load-theme 'doom-one t))
 
 ;; general-keybindings
 (use-package general
