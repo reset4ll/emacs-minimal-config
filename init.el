@@ -4,7 +4,7 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
-   '(magit counsel-projectile projectile hydra evil-collection evil general doom-themes helpful counsel ivy-rich which-key rainbow-delimiters ivy command-log-mode use-package lsp-mode))
+   '(flycheck eglot magit counsel-projectile projectile hydra general doom-themes helpful counsel ivy-rich which-key rainbow-delimiters ivy command-log-mode use-package))
  '(warning-suppress-types '((comp))))
 
 (custom-set-faces
@@ -132,7 +132,7 @@
 
 ;; general-keybindings
 (use-package general
-  :after evil
+  ;; :after evil
   :config
   (general-create-definer efs/leader-keys
     :keymaps '(normal insert visual emacs)
@@ -144,30 +144,30 @@
     "tt" '(counsel-load-theme :which-key "choose theme")
     "fde" '(lambda () (interactive) (find-file (expand-file-name "~/.emacs.d/Emacs.org")))))
   
-;; Using EVIL mode
-(use-package evil
-  :init
-  (setq evil-want-integration t)
-  (setq evil-want-keybinding nil)
-  (setq evil-want-C-u-scroll t)
-  (setq evil-want-C-i-jump nil)
-  :config
-  (evil-mode 1)
-  (define-key evil-insert-state-map (kbd "C-g") 'evil-normal-state)
-  (define-key evil-insert-state-map (kbd "C-h") 'evil-delete-backward-char-and-join)
+;; ;; Using EVIL mode
+;; (use-package evil
+;;   :init
+;;   (setq evil-want-integration t)
+;;   (setq evil-want-keybinding nil)
+;;   (setq evil-want-C-u-scroll t)
+;;   (setq evil-want-C-i-jump nil)
+;;   :config
+;;   (evil-mode 1)
+;;   (define-key evil-insert-state-map (kbd "C-g") 'evil-normal-state)
+;;   (define-key evil-insert-state-map (kbd "C-h") 'evil-delete-backward-char-and-join)
 
-  ;; Use visual line motions even outside of visual-line-mode buffers
-  (evil-global-set-key 'motion "j" 'evil-next-visual-line)
-  (evil-global-set-key 'motion "k" 'evil-previous-visual-line)
+;;   ;; Use visual line motions even outside of visual-line-mode buffers
+;;   (evil-global-set-key 'motion "j" 'evil-next-visual-line)
+;;   (evil-global-set-key 'motion "k" 'evil-previous-visual-line)
 
-  (evil-set-initial-state 'messages-buffer-mode 'normal)
-  (evil-set-initial-state 'dashboard-mode 'normal))
+;;   (evil-set-initial-state 'messages-buffer-mode 'normal)
+;;   (evil-set-initial-state 'dashboard-mode 'normal))
 
-;; Set EVIL collection
-(use-package evil-collection
-  :after evil
-  :config
-  (evil-collection-init))
+;; ;; Set EVIL collection
+;; (use-package evil-collection
+;;   :after evil
+;;   :config
+;;   (evil-collection-init))
 
 (use-package hydra
   :defer t)
@@ -212,5 +212,101 @@
 ;; - https://magit.vc/manual/ghub/Getting-Started.html#Getting-Started
 ;; (use-package forge
 ;;  :after magit)
+
+;;; --- LSP SETTINGS ---
+
+;; Set LSP mode
+(use-package lsp-mode
+  :commands (lsp lsp-deferred)
+  :hook (lsp-mode . efs/lsp-mode-setup)
+  :init
+  (setq lsp-keymap-prefix "C-c l")  ;; Or 'C-l', 's-l'
+  :config
+  (lsp-enable-which-key-integration t))
+
+;; Set LSP-ui
+(use-package lsp-ui
+  :hook (lsp-mode . lsp-ui-mode)
+  :custom
+  (lsp-ui-doc-position 'bottom))
+
+;; Set LSP-treemacs
+(use-package lsp-treemacs
+  :after lsp)
+
+;; Set LSP-ivy
+(use-package lsp-ivy
+  :after lsp)
+
+;; Set DAP-mode
+(use-package dap-mode)
+  ;; Uncomment the config below if you want all UI panes to be hidden by default!
+  ;;:custom
+  ;;(lsp-enable-dap-auto-configure nil)
+  :config
+  (dap-ui-mode 1)
+  ;;:commands dap-debug
+  :config
+  ;; Set up Node debugging
+  (require 'dap-node)
+  (dap-node-setup) ;; Automatically installs Node debug adapter if needed
+
+;; Support C/C++ for LSP-mode with 'eglot'
+(require 'eglot)
+(add-to-list 'eglot-server-programs '((c++-mode c-mode) "/usr/bin/clangd"))
+(add-hook 'c-mode-hook 'eglot-ensure)
+(add-hook 'c++-mode-hook 'eglot-ensure)
+
+;; Support Python
+(use-package python-mode
+  :ensure t
+  :hook (python-mode . lsp-deferred)
+  :custom
+  ;; NOTE: Set these if Python 3 is called "python3" on your system!
+  (python-shell-interpreter "python3")
+  (dap-python-executable "python3")
+  (dap-python-debugger 'debugpy)
+  :config
+  (require 'dap-python))
+
+(use-package pyvenv
+  :after python-mode
+  :config
+  (pyvenv-mode 1))
+
+;; Set Company
+(use-package company
+  :after lsp-mode
+  :hook (lsp-mode . company-mode)
+  :bind (:map company-active-map
+         ("<tab>" . company-complete-selection))
+        (:map lsp-mode-map
+         ("<tab>" . company-indent-or-complete-common))
+  :custom
+  (company-minimum-prefix-length 1)
+  (company-idle-delay 0.0))
+
+(use-package company-box
+  :hook (company-mode . company-box-mode))
+
+;; Enable Flycheck
+;; (add-hook 'after-init-hook #'global-flycheck-mode)
+
+(use-package flycheck
+  :diminish flycheck-mode
+  :ensure t
+  :defer t
+  :custom
+  (flycheck-check-syntax-automatically '(mode-enabled save)) ; Check on save instead of running constantly
+  :hook ((prog-mode-hook text-mode-hook) . flycheck-mode))
+
+(use-package flymake
+  :ensure t
+  :defer t)
+
+;; ;; Set Flycheck-indent
+;; (eval-after-load 'flycheck
+;;   '(flycheck-indent-setup))
+
 
 
