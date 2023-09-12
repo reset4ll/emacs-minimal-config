@@ -4,7 +4,7 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
-   '(flycheck eglot magit counsel-projectile projectile hydra general doom-themes helpful counsel ivy-rich which-key rainbow-delimiters ivy command-log-mode use-package))
+   '(cmake-mode modern-cpp-font-lock company-box company pyvenv python-mode dap-mode lsp-ivy lsp-treemacs lsp-ui powerline flycheck eglot magit counsel-projectile projectile hydra general doom-themes helpful counsel ivy-rich which-key rainbow-delimiters ivy command-log-mode use-package))
  '(warning-suppress-types '((comp))))
 
 (custom-set-faces
@@ -68,6 +68,14 @@
 
 ;; (use-package command-log-mode) ;; Disabled by the moment !!!
 
+;; Set doom-themes
+(use-package doom-themes
+  :init (load-theme 'doom-one t))
+  
+;; Set powerline
+(require 'powerline)
+(powerline-center-theme)
+
 ;; Set ivy
 (use-package ivy
   :diminish
@@ -125,10 +133,6 @@
   ([remap describe-command] . helpful-command)
   ([remap describe-variable] . counsel-describe-variable)
   ([remap describe-key] . helpful-key))
-
-;; Set doom-themes
-(use-package doom-themes
-  :init (load-theme 'doom-palenight t))
 
 ;; general-keybindings
 (use-package general
@@ -228,6 +232,7 @@
 (use-package lsp-ui
   :hook (lsp-mode . lsp-ui-mode)
   :custom
+  (lsp-ui-doc-max-width 80)
   (lsp-ui-doc-position 'bottom))
 
 ;; Set LSP-treemacs
@@ -307,6 +312,40 @@
 ;; ;; Set Flycheck-indent
 ;; (eval-after-load 'flycheck
 ;;   '(flycheck-indent-setup))
+
+;;  =============================================
+;;; === Custom settings for C/C++ programming ===
+;;  =============================================
+
+;; Set "linux" style indenting for C/C++ programming
+(setq c-default-style "linux"
+      c-basic-offset 4)
+
+;; Turn on electric pair mode
+(electric-pair-mode 1)
+
+ (c-set-offset 'substatement-open 0)
+	 (c-set-offset 'innamespace 0)
+	 (c-set-offset 'brace-list-open 0)
+	 (setq c-basic-offset 4)
+
+	 (setq lsp-clients-clangd-args
+		   '("-j=8"
+			 "--header-insertion=never"
+			 "--all-scopes-completion"
+			 "--background-index"
+			 "--clang-tidy"
+			 "--compile-commands-dir=build"
+			 "--cross-file-rename"
+			 "--suggest-missing-includes"))
+
+;; Set modern-cpp-font-lock
+(use-package modern-cpp-font-lock
+ :config
+ (modern-c++-font-lock-global-mode))
+
+;; Set cmake-mode
+(use-package cmake-mode)
 
 
 
