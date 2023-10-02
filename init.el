@@ -31,7 +31,7 @@
 ;; Set up the visible bell
 (setq visible-bell t)
 
-(set-face-attribute 'default nil :font "Fira Code Retina" :height 110)
+(set-face-attribute 'default nil :font "Iosevka" :height 110)
 
 ;;; KEYBINDINGS
 ;; Make ESC quit prompts
