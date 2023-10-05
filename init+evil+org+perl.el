@@ -644,8 +644,25 @@
 (use-package cmake-mode)
 
 ;;; === Support PERL === (Install previously CPAN::PDE)
+;; See https://metacpan.org/pod/Perl::LanguageServer
 
 (add-to-list 'load-path "/root/.emacs.d/pde/")
 (load "pde-load")
 
 (fset 'perl-mode 'cperl-mode)
+
+;; Set alias
+(defalias 'perl-mode 'cperl-mode)
+
+;; Linting flycheck
+(require 'flycheck)
+(setq flycheck-check-syntax-automatically '(mode-enabled save))
+(setq flycheck-display-errors-delay 0.3)
+
+(add-hook 'cperl-mode-hook 'flycheck-mode)
+
+;; Settings - perl-specific 
+(setq cperl-invalid-face nil)
+
+(setq cperl-indent-parens-as-block t)
+(setq cperl-close-paren-offset (- cperl-indent-level))
