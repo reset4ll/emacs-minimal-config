@@ -643,7 +643,7 @@
 ;; Set cmake-mode
 (use-package cmake-mode)
 
-;;; === Support PERL === 
+;;; === Support PERL === (Install previously CPAN::PDE)
 
 (add-to-list 'load-path "/root/.emacs.d/pde/")
 (load "pde-load")
