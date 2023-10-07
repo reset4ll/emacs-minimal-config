@@ -7,7 +7,7 @@
  '(doc-view-continuous t)
  '(global-display-line-numbers-mode t)
  '(package-selected-packages
-   '(treemacs-all-the-icons treemacs-icons-dired elisp-mode flymake-perlcritic plsense pdf-tools dired-hide-dotfiles dired-open all-the-icons-dired dired-single eshell-git-prompt vterm eterm-256color forge visual-fill-column org-bullets evil-nerd-commenter evil-collection cmake-mode modern-cpp-font-lock company-box company pyvenv python-mode dap-mode lsp-ivy lsp-treemacs lsp-ui powerline flycheck eglot magit counsel-projectile projectile hydra general doom-themes helpful counsel ivy-rich which-key rainbow-delimiters ivy command-log-mode use-package))
+   '(mood-line-theme mood-one-theme mood-line treemacs-all-the-icons treemacs-icons-dired elisp-mode flymake-perlcritic plsense pdf-tools dired-hide-dotfiles dired-open all-the-icons-dired dired-single eshell-git-prompt vterm eterm-256color forge visual-fill-column org-bullets evil-nerd-commenter evil-collection cmake-mode modern-cpp-font-lock company-box company pyvenv python-mode dap-mode lsp-ivy lsp-treemacs lsp-ui powerline flycheck eglot magit counsel-projectile projectile hydra general doom-themes helpful counsel ivy-rich which-key rainbow-delimiters ivy command-log-mode use-package))
  '(tool-bar-mode nil)
  '(warning-suppress-types '((comp))))
 
@@ -77,8 +77,15 @@
   :init (load-theme 'doom-one t)) ;; load onedark-theme
   
 ;; Set powerline
-(require 'powerline)
-(powerline-center-theme)
+;;(require 'powerline)
+;;(powerline-center-theme)
+
+;; Enable mood-line (status bar)
+(use-package mood-line
+  :config
+  (mood-line-mode))
+;; Enable mood-one-theme for flycheck
+  (eval-after-load 'flycheck #'mood-one-theme-flycheck-fringe-bmp-enable)
 
 ;; Set ivy
 (use-package ivy
