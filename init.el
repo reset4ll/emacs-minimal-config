@@ -7,7 +7,7 @@
  '(doc-view-continuous t)
  '(global-display-line-numbers-mode t)
  '(package-selected-packages
-   '(pdf-tools dired-hide-dotfiles dired-open all-the-icons-dired dired-single eshell-git-prompt vterm eterm-256color forge visual-fill-column org-bullets evil-nerd-commenter evil-collection cmake-mode modern-cpp-font-lock company-box company pyvenv python-mode dap-mode lsp-ivy lsp-treemacs lsp-ui powerline flycheck eglot magit counsel-projectile projectile hydra general doom-themes helpful counsel ivy-rich which-key rainbow-delimiters ivy command-log-mode use-package))
+   '(treemacs-all-the-icons treemacs-icons-dired elisp-mode flymake-perlcritic plsense pdf-tools dired-hide-dotfiles dired-open all-the-icons-dired dired-single eshell-git-prompt vterm eterm-256color forge visual-fill-column org-bullets evil-nerd-commenter evil-collection cmake-mode modern-cpp-font-lock company-box company pyvenv python-mode dap-mode lsp-ivy lsp-treemacs lsp-ui powerline flycheck eglot magit counsel-projectile projectile hydra general doom-themes helpful counsel ivy-rich which-key rainbow-delimiters ivy command-log-mode use-package))
  '(tool-bar-mode nil)
  '(warning-suppress-types '((comp))))
 
@@ -16,8 +16,7 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- 
- '(default ((t (:family "Iosevka Term" :foundry "UKWN" :slant normal :weight normal :height 128 :width normal)))))
+ '(default ((t (:family "Iosevka Term" :foundry "UKWN" :slant normal :weight normal :height 120 :width normal)))))
 
 (setq inhibit-startup-message t)  ; Disable visible startup message
 
@@ -31,7 +30,7 @@
 ;; Set up the visible bell
 (setq visible-bell t)
 
-(set-face-attribute 'default nil :font "Iosevka" :height 110)
+;;(set-face-attribute 'default nil :font "Iosevka" :height 75)
 
 ;;; KEYBINDINGS
 ;; Make ESC quit prompts
@@ -75,7 +74,7 @@
 
 ;; Set doom-themes
 (use-package doom-themes
-  :init (load-theme 'doom-one t))
+  :init (load-theme 'doom-one t)) ;; load onedark-theme
   
 ;; Set powerline
 (require 'powerline)
@@ -484,6 +483,12 @@
   (dap-python-debugger 'debugpy)
   :config
   (require 'dap-python))
+  
+;; Pylint settings
+ (autoload 'pylint "pylint")
+ (add-hook 'python-mode-hook 'pylint-add-menu-items)
+ (add-hook 'python-mode-hook 'pylint-add-key-bindings)
+
 
 (use-package pyvenv
   :after python-mode
@@ -644,5 +649,40 @@
 ;; Set cmake-mode
 (use-package cmake-mode)
 
+;;; === Support PERL === (Install previously CPAN::PDE)
+;; See https://metacpan.org/pod/Perl::LanguageServer
 
+(add-to-list 'load-path "~/.emacs.d/pde/")
+(load "pde-load")
 
+(fset 'perl-mode 'cperl-mode)
+
+;; Set alias
+(defalias 'perl-mode 'cperl-mode)
+
+;; Linting flycheck
+(require 'flycheck)
+(setq flycheck-check-syntax-automatically '(mode-enabled save))
+(setq flycheck-display-errors-delay 0.3)
+
+(add-hook 'cperl-mode-hook 'flycheck-mode)
+ 
+;;;=========================================
+;;;  Clojure Development
+;;;=========================================
+(use-package lsp-mode
+  :ensure t
+  :hook ((clojure-mode . lsp)
+         (clojurec-mode . lsp)
+         (clojurescript-mode . lsp))
+  :config
+  ;; add paths to your local installation of project mgmt tools, like lein
+  (setenv "PATH" (concat
+                   "/usr/local/bin" path-separator
+                   (getenv "PATH")))
+  (dolist (m '(clojure-mode
+               clojurec-mode
+               clojurescript-mode
+               clojurex-mode))
+     (add-to-list 'lsp-language-id-configuration `(,m . "clojure")))
+  (setq lsp-clojure-server-command '("/usr/bin/clojure-lsp"))) ;; Optional: In case `clojure-lsp` is not in your $PATH
