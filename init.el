@@ -75,10 +75,6 @@
 ;; Set doom-themes
 (use-package doom-themes
   :init (load-theme 'doom-one t)) ;; load onedark-theme
-  
-;; Set powerline
-;;(require 'powerline)
-;;(powerline-center-theme)
 
 ;; Enable mood-line (status bar)
 (use-package mood-line
