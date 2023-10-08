@@ -646,7 +646,7 @@
 ;;; === Support PERL === (Install previously CPAN::PDE)
 ;; See https://metacpan.org/pod/Perl::LanguageServer
 
-(add-to-list 'load-path "/root/.emacs.d/pde/")
+(add-to-list 'load-path "~/.emacs.d/pde/")
 (load "pde-load")
 
 (fset 'perl-mode 'cperl-mode)
