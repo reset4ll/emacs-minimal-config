@@ -7,7 +7,7 @@
  '(doc-view-continuous t)
  '(global-display-line-numbers-mode t)
  '(package-selected-packages
-   '(mood-line-theme mood-one-theme mood-line treemacs-all-the-icons treemacs-icons-dired elisp-mode flymake-perlcritic plsense pdf-tools dired-hide-dotfiles dired-open all-the-icons-dired dired-single eshell-git-prompt vterm eterm-256color forge visual-fill-column org-bullets evil-nerd-commenter evil-collection cmake-mode modern-cpp-font-lock company-box company pyvenv python-mode dap-mode lsp-ivy lsp-treemacs lsp-ui powerline flycheck eglot magit counsel-projectile projectile hydra general doom-themes helpful counsel ivy-rich which-key rainbow-delimiters ivy command-log-mode use-package))
+   '(prettier slime mood-line-theme mood-one-theme mood-line treemacs-all-the-icons treemacs-icons-dired elisp-mode flymake-perlcritic plsense pdf-tools dired-hide-dotfiles dired-open all-the-icons-dired dired-single eshell-git-prompt vterm eterm-256color forge visual-fill-column org-bullets evil-nerd-commenter evil-collection cmake-mode modern-cpp-font-lock company-box company pyvenv python-mode dap-mode lsp-ivy lsp-treemacs lsp-ui powerline flycheck eglot magit counsel-projectile projectile hydra general doom-themes helpful counsel ivy-rich which-key rainbow-delimiters ivy command-log-mode use-package))
  '(tool-bar-mode nil)
  '(warning-suppress-types '((comp))))
 
@@ -70,8 +70,6 @@
 		eshell-mode-hook))
   (add-hook mode (lambda () (display-line-numbers-mode 0))))
 
-;; (use-package command-log-mode) ;; Disabled by the moment !!!
-
 ;; Set doom-themes
 (use-package doom-themes
   :init (load-theme 'doom-one t)) ;; load onedark-theme
@@ -82,6 +80,9 @@
   (mood-line-mode))
 ;; Enable mood-one-theme for flycheck
   (eval-after-load 'flycheck #'mood-one-theme-flycheck-fringe-bmp-enable)
+  
+;; Enable prettier (Previously install npm/yarn prettier)
+(add-hook 'after-init-hook #'global-prettier-mode)
 
 ;; Set ivy
 (use-package ivy
@@ -510,11 +511,9 @@
   (company-minimum-prefix-length 1)
   (company-idle-delay 0.0))
 
+;; Enable company-box
 (use-package company-box
   :hook (company-mode . company-box-mode))
-
-;; Enable Flycheck
-;; (add-hook 'after-init-hook #'global-flycheck-mode)
 
 (use-package flycheck
   :diminish flycheck-mode
@@ -523,24 +522,29 @@
   :custom
   (flycheck-check-syntax-automatically '(mode-enabled save)) ; Check on save instead of running constantly
   :hook ((prog-mode-hook text-mode-hook) . flycheck-mode))
+  
+;; Enable flycheck
+ (add-hook 'after-init-hook #'global-flycheck-mode)  
+ 
+;; Set flycheck-indent
+;; (eval-after-load 'flycheck
+;;   '(flycheck-indent-setup)) 
 
+;; Enable flymake
 (use-package flymake
   :ensure t
   :defer t)
 
-;; ;; Set Flycheck-indent
-;; (eval-after-load 'flycheck
-;;   '(flycheck-indent-setup))
-
 (use-package term
   :commands term
   :config
-  (setq explicit-shell-file-name "bash") ;; Change this to zsh, etc
-  ;;(setq explicit-zsh-args '())         ;; Use 'explicit-<shell>-args for shell-specific args
+  (setq explicit-shell-file-name "bash") ; Change this to zsh, etc
+  ;;(setq explicit-zsh-args '())         ; Use 'explicit-<shell>-args for shell-specific args
 
-  ;; Match the default Bash shell prompt.  Update this if you have a custom prompt
-  (setq term-prompt-regexp "^[^#$%>\n]*[#$%>] *"))
+;; Match the default Bash shell prompt. Update this if you have a custom prompt
+(setq term-prompt-regexp "^[^#$%>\n]*[#$%>] *"))
 
+;; Enable 256 colors
 (use-package eterm-256color
   :hook (term-mode . eterm-256color-mode))
 
@@ -655,7 +659,7 @@
 ;;; === Support PERL === (Install previously CPAN::PDE)
 ;; See https://metacpan.org/pod/Perl::LanguageServer
 
-(add-to-list 'load-path "~/.emacs.d/pde/")
+(add-to-list 'load-path "~/.emacs.d/pde/")  ; Path to install PDE
 (load "pde-load")
 
 (fset 'perl-mode 'cperl-mode)
