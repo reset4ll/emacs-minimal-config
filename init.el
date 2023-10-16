@@ -622,6 +622,10 @@
 ;; Make gc pauses faster by decreasing the threshold.
 (setq gc-cons-threshold (* 2 1000 1000))
 
+;; Trailing whitespaces on save
+(add-hook 'before-save-hook
+          'delete-trailing-whitespace)
+
 ;;  =============================================
 ;;; === Custom settings for C/C++ programming ===
 ;;  =============================================
