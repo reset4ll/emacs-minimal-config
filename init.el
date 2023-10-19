@@ -7,7 +7,7 @@
  '(doc-view-continuous t)
  '(global-display-line-numbers-mode t)
  '(package-selected-packages
-   '(prettier slime mood-line-theme mood-one-theme mood-line treemacs-all-the-icons treemacs-icons-dired elisp-mode flymake-perlcritic plsense pdf-tools dired-hide-dotfiles dired-open all-the-icons-dired dired-single eshell-git-prompt vterm eterm-256color forge visual-fill-column org-bullets evil-nerd-commenter evil-collection cmake-mode modern-cpp-font-lock company-box company pyvenv python-mode dap-mode lsp-ivy lsp-treemacs lsp-ui powerline flycheck eglot magit counsel-projectile projectile hydra general doom-themes helpful counsel ivy-rich which-key rainbow-delimiters ivy command-log-mode use-package))
+   '(auctex prettier slime mood-line-theme mood-one-theme mood-line treemacs-all-the-icons treemacs-icons-dired elisp-mode flymake-perlcritic plsense pdf-tools dired-hide-dotfiles dired-open all-the-icons-dired dired-single eshell-git-prompt vterm eterm-256color forge visual-fill-column org-bullets evil-nerd-commenter evil-collection cmake-mode modern-cpp-font-lock company-box company pyvenv python-mode dap-mode lsp-ivy lsp-treemacs lsp-ui powerline flycheck eglot magit counsel-projectile projectile hydra general doom-themes helpful counsel ivy-rich which-key rainbow-delimiters ivy command-log-mode use-package))
  '(tool-bar-mode nil)
  '(warning-suppress-types '((comp))))
 
@@ -16,7 +16,7 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(default ((t (:family "Iosevka Term" :foundry "UKWN" :slant normal :weight normal :height 120 :width normal)))))
+ '(default ((t (:family "Iosevka Comfy" :foundry "UKWN" :slant normal :weight normal :height 120 :width normal)))))
 
 (setq inhibit-startup-message t)  ; Disable visible startup message
 
@@ -80,7 +80,7 @@
   (mood-line-mode))
 ;; Enable mood-one-theme for flycheck
   (eval-after-load 'flycheck #'mood-one-theme-flycheck-fringe-bmp-enable)
-  
+
 ;; Enable prettier (Previously install npm/yarn prettier)
 (add-hook 'after-init-hook #'global-prettier-mode)
 
@@ -155,7 +155,7 @@
     "t"  '(:ignore t :which-key "toggles")
     "tt" '(counsel-load-theme :which-key "choose theme")
     "fde" '(lambda () (interactive) (find-file (expand-file-name "~/.emacs.d/Emacs.org")))))
-  
+
  ;; Using EVIL mode
  (use-package evil
    :init
@@ -180,7 +180,7 @@
    :after evil
    :config
    (evil-collection-init))
-   
+
  ;; Set evil nerd commenter
  (use-package evil-nerd-commenter
   :bind ("M-/" . evilnc-comment-or-uncomment-lines))
@@ -414,7 +414,7 @@
   (setq projectile-switch-project-action #'projectile-dired))
 
 ;; Set counsel-projectile
-(use-package counsel-projectile   
+(use-package counsel-projectile
   :after projectile
   :config (counsel-projectile-mode))
 
@@ -424,7 +424,7 @@
   :custom
   (magit-display-buffer-function #'magit-display-buffer-same-window-except-diff-v1))
 
-;; Set Forge  
+;; Set Forge
 ;; NOTE: Make sure to configure a GitHub token before using this package!
 ;; - https://magit.vc/manual/forge/Token-Creation.html#Token-Creation
 ;; - https://magit.vc/manual/ghub/Getting-Started.html#Getting-Started
@@ -487,7 +487,7 @@
   (dap-python-debugger 'debugpy)
   :config
   (require 'dap-python))
-  
+
 ;; Pylint settings
  (autoload 'pylint "pylint")
  (add-hook 'python-mode-hook 'pylint-add-menu-items)
@@ -522,13 +522,13 @@
   :custom
   (flycheck-check-syntax-automatically '(mode-enabled save)) ; Check on save instead of running constantly
   :hook ((prog-mode-hook text-mode-hook) . flycheck-mode))
-  
+
 ;; Enable flycheck
- (add-hook 'after-init-hook #'global-flycheck-mode)  
- 
+ (add-hook 'after-init-hook #'global-flycheck-mode)
+
 ;; Set flycheck-indent
 ;; (eval-after-load 'flycheck
-;;   '(flycheck-indent-setup)) 
+;;   '(flycheck-indent-setup))
 
 ;; Enable flymake
 (use-package flymake
@@ -626,6 +626,10 @@
 (add-hook 'before-save-hook
           'delete-trailing-whitespace)
 
+;; Settings for LaTeX orgmode
+(setq org-latex-compiler "xelatex")
+(setq org-latex-pdf-process '("xelatex %f"))
+
 ;;  =============================================
 ;;; === Custom settings for C/C++ programming ===
 ;;  =============================================
@@ -677,7 +681,7 @@
 (setq flycheck-display-errors-delay 0.3)
 
 (add-hook 'cperl-mode-hook 'flycheck-mode)
- 
+
 ;;;=========================================
 ;;;  Clojure Development
 ;;;=========================================
