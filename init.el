@@ -664,6 +664,19 @@
 ;; Set cmake-mode
 (use-package cmake-mode)
 
+;; == Haskell Support ==
+;(use-package haskell-mode)
+;(use-package lsp-haskell)
+;(use-package flycheck-haskell)
+(add-hook 'flycheck-mode-hook #'flycheck-haskell-setup)
+
+;; == Java Support ==
+;(use-package jdee)
+;(use-package lsp-java)
+
+;; == Racket Support
+;(use-package racket-mode)
+
 ;;; === Support PERL === (Install previously CPAN::PDE)
 ;; See https://metacpan.org/pod/Perl::LanguageServer
 
